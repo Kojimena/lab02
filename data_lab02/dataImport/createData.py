@@ -37,7 +37,7 @@ def generar_usuario():
         'historial_compras': historial_compras,
         'direccion': direccion,
         'tags': tags,
-        'archivo': faker.boolean(),
+        'activo': faker.boolean(),
         'notas': faker.text(),
         'visitas': random.randint(0, 1000),
         'amigos': [random.randint(0, 10000) for _ in range(random.randint(0, 2000))],
