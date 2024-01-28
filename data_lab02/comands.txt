@@ -1,0 +1,48 @@
+db.vehiculos.updateMany(
+   {},
+   {
+     $rename: {
+       “Id-del-Coche”: "_id",
+       “Marca-del-Coche”: "brand",
+       "Modelo-del-Coche": "model",
+       “Año-del-Coche": "year",
+       “Precio-del-Coche": "price"
+     }
+   }
+);
+
+
+
+db.vehiculos.aggregate([
+{
+    $group: {
+      _id: { brand: "$brand", year: "$year" }, #agrupar por año y marca
+      modelosUnicos: { $addToSet: "$model" }, #modelo unico de ese año
+      precioPromedio: { $avg: "$price" } #precio promedio
+    }
+  },
+  {
+    $project: { #hacemos una proyección con los campos que queremos
+      _id: 0,
+      brand: "$_id.brand",
+      year: "$_id.year",
+      cantidadModelos: { $size: "$modelosUnicos" },
+      precioPromedio: 1 #Incluye el campo precioPromedio calculado en la etapa $group en la salida.
+    }
+  },
+  { $out : 'tempCollection' } #guardar en collection temporal
+]);
+
+db.tempCollection.insertMany(resultados);
+
+mongoexport --db laboratorio2 --collection tempCollection --out /Users/jime/7mo semestre/bd2/lab02/data_lab02/vehiculos_brand_stats.json --jsonArray
+
+db.vehiculos.aggregate([
+  { $match: { year: { $gte: 1990, $lte: 1999 } } },
+  { $sort: { price: -1 } },
+  { $limit: 20 },
+  { $project: { _id: 0, brand: 1, model: 1, year: 1, price: 1 } },
+  { $out : 'tempCollection' }
+]);
+
+db.tempCollection.find().pretty()
