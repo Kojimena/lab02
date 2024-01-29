@@ -66,3 +66,8 @@ for _ in range(100000):
     coleccion.insert_one(usuario)
 print('Usuarios insertados')
 
+#para insertar 50.000 usuarios
+""" for _ in range(50000):
+    usuario = generar_usuario()
+    coleccion.insert_one(usuario)
+print('Usuarios insertados') """

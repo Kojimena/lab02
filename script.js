@@ -24,3 +24,18 @@ db.usuarios.find({ "tags": "tag2", "visitas": { $gte: 100 }}, {nombre:1, tags:1,
 
 //Usuarios con preferencias de color "azul" y que tienen entre 1000 y 2000 amigos.
 db.usuarios.aggregate([ { $project: { nombre: 1, preferencias: 1, cantidadAmigos: { $size: "$amigos" } } }, { $match: { "preferencias.color": "Blue", "cantidadAmigos": { $gte: 1000, $lte: 2000 } } }] ).explain('executionStats');
+
+//INDICES
+//1
+db.usuarios.createIndex({ activo: 1, puntos: 1 })
+
+//2
+db.usuarios.createIndex({ "historial_compras.producto": 1, "historial_compras.fecha": 1 })
+
+//3
+db.usuarios.createIndex({tags: 1,visitas: 1 })
+
+//4
+db.usuarios.createIndex({ "preferencias.color": 1, "amigos": 1 })
+
+
